@@ -26,15 +26,16 @@ Cypress.Commands.add('token', (email, senha) => {
     })
  })
 
- Cypress.Commands.add('cadastrarUsuário', (faker, aluno)=>{
-  cy.request({
-        method: 'POST',
-        url: 'usuarios',
-        body: {
-          "nome": aluno,
-          "email": (faker.internet.email()),
-          "password": (faker.internet.password()),
-          "administrador": "true"
-        }
-      })
- })
+ Cypress.Commands.add('cadastrarUsuário', (faker) => {
+  let usuario = 'Aluno EBAC ' + Math.floor(Math.random() * 10000000000)
+  return cy.request({
+    method: 'POST',
+    url: 'usuarios',
+    body: {
+      "nome": usuario,
+      "email": faker.internet.email(),
+      "password": faker.internet.password(),
+      "administrador": "true"
+    }
+  })
+})

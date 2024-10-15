@@ -2,7 +2,6 @@
 import { faker } from '@faker-js/faker';
 import contrato from '../contracts/usuario.contract'
 
-
 describe('Testes da Funcionalidade Usuários', () => {
 
   let token
@@ -29,8 +28,7 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('Deve cadastrar um usuário com sucesso - POST', () => {
-    let usuario = 'Aluno EBAC ' + Math.floor(Math.random() * 10000000000)
-    cy.cadastrarUsuário(faker, usuario)
+    cy.cadastrarUsuário(faker)
       .should((response) => {
         expect(response.body.message).equal('Cadastro realizado com sucesso')
         expect(response.status).equal(201)
@@ -55,18 +53,18 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('Deve editar um usuário previamente cadastrado - PUT', () => {
-    let usuario = 'Aluno Editado ' + Math.floor(Math.random() * 10000000000)
-    cy.cadastrarUsuário(faker, usuario)
+    cy.cadastrarUsuário(faker)
       .then(response => {
         let id = response.body._id
+        let usuario = 'Aluno Editado ' + Math.floor(Math.random() * 10000000000)
         cy.request({
           method: 'PUT',
           url: `usuarios/${id}`,
           headers: { authorization: token },
           body: {
             "nome": usuario,
-            "email": (faker.internet.email()),
-            "password": (faker.internet.password()),
+            "email": faker.internet.email(),
+            "password": faker.internet.password(),
             "administrador": "true"
           }
         }).should((response) => {
@@ -74,21 +72,20 @@ describe('Testes da Funcionalidade Usuários', () => {
           expect(response.status).equal(200)
         })
       })
-
   });
 
   it('Deve deletar um usuário previamente cadastrado - DELETE', () => {
-      cy.cadastrarUsuário(faker, token)
-        .then(response => {
-          let id = response.body._id
-          cy.request({
-            method: 'DELETE',
-            url: `usuarios/${id}`,
-            headers: { authorization: token }
-          }).should((response) => {
-            expect(response.body.message).equal('Registro excluído com sucesso')
-            expect(response.status).equal(200)
-          })
+    cy.cadastrarUsuário(faker)
+      .then(response => {
+        let id = response.body._id
+        cy.request({
+          method: 'DELETE',
+          url: `usuarios/${id}`,
+          headers: { authorization: token }
+        }).should((response) => {
+          expect(response.body.message).equal('Registro excluído com sucesso')
+          expect(response.status).equal(200)
         })
-    })
+      })
   });
+});
