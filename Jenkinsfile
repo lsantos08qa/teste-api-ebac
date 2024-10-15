@@ -8,6 +8,13 @@ pipeline {
                 sh 'npm install'
             }
         }
+        
+        stage('Iniciar Servidor') {
+            steps {
+                sh 'nohup npm start &'
+            }
+        }
+        
         stage('Test') {
             steps {
                 sh 'NO_COLOR=1 npm test'
